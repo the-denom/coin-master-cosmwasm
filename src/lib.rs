@@ -50,7 +50,8 @@ where
 
 pub trait CreateCoinMasterMsg {
     type Msg: From<CoinMasterMsg>;
-    fn create_mint_msg<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg>;
+    fn coin_master_mint<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg>;
+    fn coin_master_burn<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg>;
 }
 
 impl<T> CreateCoinMasterMsg for T
@@ -58,8 +59,14 @@ where
     T: From<CoinMasterMsg>,
 {
     type Msg = T;
-    fn create_mint_msg<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg> {
+    fn coin_master_mint<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg> {
         Ok(CoinMasterMsg::Mint {
+            amount: amount.into(),
+        }
+        .into())
+    }
+    fn coin_master_burn<A: Into<Uint256>>(amount: A) -> StdResult<Self::Msg> {
+        Ok(CoinMasterMsg::Burn {
             amount: amount.into(),
         }
         .into())
